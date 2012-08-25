@@ -5,6 +5,9 @@ A quick way to convert an existing JS file to Coffeescript from Sublime Text.
 ## Installation
 
 * Install [Package Control](http://wbond.net/sublime_packages/package_control)
+OR
+* clone this repo to your Packages directory
+
 * Install node, npm
 * `npm install -g js2coffee`
 * `cmd-shift-p` Package Control: Install Package -> JS2Coffee
