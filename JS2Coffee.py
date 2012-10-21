@@ -24,7 +24,7 @@ class JsCoffeeCommand(sublime_plugin.WindowCommand):
             edit = view.begin_edit()
             view.insert(edit, 0, output)
             view.end_edit(edit)
-            self.window.run_command('show_overlay', {"overlay": "command_palette", "text": "Set Syntax: CoffeeScript"})
+            view.set_syntax_file('Packages/CoffeeScript/CoffeeScript.tmLanguage')
 
     def js2coffee(self, contents=None):
         if contents:
