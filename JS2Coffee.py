@@ -1,15 +1,10 @@
 import sublime
 import sublime_plugin
 import subprocess
-import re
-import os
 
 
 class JsCoffeeCommand(sublime_plugin.WindowCommand):
-
     def run(self):
-        self.env = os.environ.copy()
-        self.env['PATH'] = '/usr/local/bin'
         self.view = self.window.active_view()
         self.js_file = self.view.file_name()
 
@@ -21,7 +16,7 @@ class JsCoffeeCommand(sublime_plugin.WindowCommand):
     def view_contents(self):
         whole_file = sublime.Region(0, self.view.size())
         return self.view.substr(whole_file)
-        
+
     def new_buffer(self, contents=None):
         view = self.window.new_file()
         output = self.js2coffee(contents)
@@ -33,24 +28,25 @@ class JsCoffeeCommand(sublime_plugin.WindowCommand):
 
     def js2coffee(self, contents=None):
         if contents:
-            js2coffee = subprocess.Popen('js2coffee', 
+            js2coffee = subprocess.Popen(
+                'js2coffee',
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE, 
-                env=self.env,
-                shell=True)
+                stderr=subprocess.PIPE,
+                shell=True
+            )
             output, error = js2coffee.communicate(contents)
         else:
             with open(self.js_file, 'r') as js:
-                js2coffee = subprocess.Popen('js2coffee', 
+                js2coffee = subprocess.Popen(
+                    'js2coffee',
                     stdin=js,
                     stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE, 
-                    env=self.env,
-                    shell=True)
+                    stderr=subprocess.PIPE,
+                    shell=True,
+                )
                 output, error = js2coffee.communicate()
         if error:
-            # raise OSError(error)
             self.write_to_console(error)
             self.window.run_command("show_panel", {"panel": "output.exec"})
             return None
@@ -58,9 +54,10 @@ class JsCoffeeCommand(sublime_plugin.WindowCommand):
 
     def write_to_console(self, str):
         self.output_view = self.window.get_output_panel("exec")
-        selection_was_at_end = (len(self.output_view.sel()) == 1
-            and self.output_view.sel()[0]
-                == sublime.Region(self.output_view.size()))
+        selection_was_at_end = (
+            len(self.output_view.sel()) == 1 and
+            self.output_view.sel()[0] == sublime.Region(self.output_view.size())
+        )
         self.output_view.set_read_only(False)
         edit = self.output_view.begin_edit()
         self.output_view.insert(edit, self.output_view.size(), str)
@@ -68,4 +65,3 @@ class JsCoffeeCommand(sublime_plugin.WindowCommand):
             self.output_view.show(self.output_view.size())
         self.output_view.end_edit(edit)
         self.output_view.set_read_only(True)
-
