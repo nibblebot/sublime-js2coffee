@@ -9,7 +9,7 @@ OR
 * clone this repo to your Packages directory
 
 * Install node, npm
-* `npm install -g js2coffee`
+* `npm install -g js2coffee coffee-script`
 * `cmd-shift-p` Package Control: Install Package -> JS2Coffee
 
 
