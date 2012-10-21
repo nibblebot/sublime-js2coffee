@@ -5,36 +5,31 @@ import re
 import os
 
 
-class JsCoffeeCommand(sublime_plugin.TextCommand):
+class JsCoffeeCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        self.env = os.environ.copy()
+        self.env['PATH'] = '/usr/local/bin'
+        self.view = self.window.active_view()
+        self.js_file = self.view.file_name()
+
+        if self.js_file:
+            self.new_buffer()
+        else:
+            self.new_buffer(self.view_contents())
+
     def view_contents(self):
         whole_file = sublime.Region(0, self.view.size())
         return self.view.substr(whole_file)
-
-    def run(self, edit):
-        self.edit = edit
-        self.js_file = self.view.file_name()
-
-        # unsaved buffer -> new buffer
-        if not self.js_file:
-            return self.new_buffer(self.view_contents())
-
-        coffee_file = re.sub(r'/js/(.*)\.js$', r'/coffee/\1.coffee', self.js_file)
-        if os.path.isfile(coffee_file):
-            # file -> buffer (no overwrite)
-            if not sublime.ok_cancel_dialog('File %s exists. Overwrite?' % coffee_file):
-                return self.new_buffer()
-
-        # make output dir if needed
-        output_dir = os.path.dirname(coffee_file)
-        if not os.path.isdir(output_dir):
-            os.makedirs(output_dir)
-
-
-        # file -> file
-        with open(coffee_file, 'w') as coffee:
-            coffee.write(self.js2coffee())
-
-            sublime.active_window().open_file(coffee_file)
+        
+    def new_buffer(self, contents=None):
+        view = self.window.new_file()
+        output = self.js2coffee(contents)
+        if output:
+            edit = view.begin_edit()
+            view.insert(edit, 0, output)
+            view.end_edit(edit)
+            self.window.run_command('show_overlay', {"overlay": "command_palette", "text": "Set Syntax: CoffeeScript"})
 
     def js2coffee(self, contents=None):
         if contents:
@@ -42,6 +37,7 @@ class JsCoffeeCommand(sublime_plugin.TextCommand):
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE, 
+                env=self.env,
                 shell=True)
             output, error = js2coffee.communicate(contents)
         else:
@@ -50,12 +46,26 @@ class JsCoffeeCommand(sublime_plugin.TextCommand):
                     stdin=js,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE, 
+                    env=self.env,
                     shell=True)
                 output, error = js2coffee.communicate()
         if error:
-            raise OSError(error)
+            # raise OSError(error)
+            self.write_to_console(error)
+            self.window.run_command("show_panel", {"panel": "output.exec"})
+            return None
         return output
 
-    def new_buffer(self, contents=None):
-        view = sublime.active_window().new_file()
-        view.insert(self.edit, 0, self.js2coffee(contents))
+    def write_to_console(self, str):
+        self.output_view = self.window.get_output_panel("exec")
+        selection_was_at_end = (len(self.output_view.sel()) == 1
+            and self.output_view.sel()[0]
+                == sublime.Region(self.output_view.size()))
+        self.output_view.set_read_only(False)
+        edit = self.output_view.begin_edit()
+        self.output_view.insert(edit, self.output_view.size(), str)
+        if selection_was_at_end:
+            self.output_view.show(self.output_view.size())
+        self.output_view.end_edit(edit)
+        self.output_view.set_read_only(True)
+
