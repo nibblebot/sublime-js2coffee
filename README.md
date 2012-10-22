@@ -4,8 +4,9 @@ A quick way to convert Javascript to Coffeescript without leaving Sublime Text 2
 
 ## Installation
 
-* Install [node](http://nodejs.org/) and [npm](https://npmjs.org/)
-* Install js2coffee and coffee-script: `npm install -g js2coffee coffee-script`
+* Install [node](http://nodejs.org/) and [npm](https://npmjs.org/) (js2coffee requires these)
+* Install [js2coffee](https://github.com/rstacruz/js2coffee) and [coffee-script](https://github.com/jashkenas/coffee-script): `npm install -g js2coffee coffee-script` (the actual converter)
+* Install the [CoffeeScript Sublime Plugin](https://github.com/Xavura/CoffeeScript-Sublime-Plugin) for syntax highlighting
 
 then, either
 
