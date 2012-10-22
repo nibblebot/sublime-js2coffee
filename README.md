@@ -4,8 +4,8 @@ A quick way to convert an existing JS file (or an unsaved buffer with Javascript
 
 ## Installation
 
-* Install node and npm
-* `npm install -g js2coffee coffee-script`
+* Install [node](http://nodejs.org/) and [npm](https://npmjs.org/)
+* Install js2coffee and coffee-script: `npm install -g js2coffee coffee-script`
 
 then, either
 
@@ -14,7 +14,7 @@ then, either
 
 or
 
-* Clone this repo to your `Packages` directory (**Not Recommended:** cloning will not allow you to update automatically).
+* Clone this repo into your `Packages` directory (**Not Recommended:** cloning will not allow you to update automatically).
 
 
 ## Usage
