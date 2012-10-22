@@ -14,26 +14,17 @@ OR
 
 
 ## Usage
-
-
-
-
-
- ![image](http://f.cl.ly/items/2f3Y3X070D1v0Q123Y35/test.js%20%E2%80%94%20sublime-js2coffee.jpg)
  
-* `cmd-shift-p` JS2Coffee 
+* `cmd-shift-p` JS2Coffee: 
+
+![image](http://f.cl.ly/items/3B1l2H2K0U3r2U1E0f0U/test.js%20%E2%80%94%20sublime-js2coffee-1.jpg)
 
 * OR
 
 * Bind a key to `js_coffee` (e.g. in <Packages>/User/Default (OSX).sublime-keymap) (**Note: there is no keyboard shortcut set by default out of courtesy**):
 `{ "keys": ["ctrl+shift+j"], "command": "js_coffee"}`
 
-![image](http://f.cl.ly/items/2E192C1r3C443o2k3S3Q/untitled%20%E2%80%94%20sublime-js2coffee-1.jpg)
-
-* A new buffer will open with the Command Palette preset to Set Syntax to CoffeeScript (You will have to hit Enter here to set the syntax).
-
- ![image](http://f.cl.ly/items/3S011V12233C2D1D2N20/untitled%20%E2%80%94%20sublime-js2coffee.jpg)
-
+![image](http://f.cl.ly/items/3P3z0Z0r2K1C3c2V1r3a/untitled%20%E2%80%94%20sublime-js2coffee-2.jpg)
 
 ## Troubleshooting
 
