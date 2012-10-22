@@ -1,4 +1,15 @@
 
+0.3.0 / 2012-10-21 
+==================
+
+  * update README
+  * Merge pull request #3 from slang800/master
+  * several changes
+  * ocd
+  * added new command and clarified old one
+  * no need to "manually" set syntax to coffee
+  * Update JS2Coffee.py
+
 0.2.0 / 2012-10-21 
 ==================
 
