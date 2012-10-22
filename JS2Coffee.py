@@ -4,48 +4,41 @@ import subprocess
 
 
 class JsCoffeeCommand(sublime_plugin.WindowCommand):
-    def run(self):
+    def run(self, new_file):
+        self.new_file = new_file
         self.view = self.window.active_view()
-        self.js_file = self.view.file_name()
+        input_region = self.select_all(self.view)
 
-        if self.js_file:
-            self.new_buffer()
-        else:
-            self.new_buffer(self.view_contents())
-
-    def view_contents(self):
-        whole_file = sublime.Region(0, self.view.size())
-        return self.view.substr(whole_file)
-
-    def new_buffer(self, contents=None):
-        view = self.window.new_file()
+        contents = self.view.substr(input_region)
         output = self.js2coffee(contents)
-        if output:
-            edit = view.begin_edit()
-            view.insert(edit, 0, output)
-            view.end_edit(edit)
-            view.set_syntax_file('Packages/CoffeeScript/CoffeeScript.tmLanguage')
 
-    def js2coffee(self, contents=None):
-        if contents:
-            js2coffee = subprocess.Popen(
-                'js2coffee',
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                shell=True
-            )
-            output, error = js2coffee.communicate(contents)
-        else:
-            with open(self.js_file, 'r') as js:
-                js2coffee = subprocess.Popen(
-                    'js2coffee',
-                    stdin=js,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    shell=True,
-                )
-                output, error = js2coffee.communicate()
+        if output:
+            if self.new_file:
+                view = self.window.new_file()
+                output_region = self.select_all(view)
+            else:
+                view = self.view
+                output_region = input_region
+
+            edit = view.begin_edit()
+            view.replace(edit, output_region, output)
+            view.set_syntax_file('Packages/CoffeeScript/CoffeeScript.tmLanguage')
+            view.end_edit(edit)
+
+    def select_all(self, view):
+        """returns a region containing the whole view"""
+        return sublime.Region(0, self.view.size())
+
+    def js2coffee(self, contents):
+        js2coffee = subprocess.Popen(
+            'js2coffee',
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+        output, error = js2coffee.communicate(contents)
+
         if error:
             self.write_to_console(error)
             self.window.run_command("show_panel", {"panel": "output.exec"})
